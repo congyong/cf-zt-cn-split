@@ -3,12 +3,12 @@ import os
 import re
 
 CF_API_TOKEN = os.getenv("CF_API_TOKEN")
-ACCOUNT_ID   = os.getenv("CF_ACCOUNT_ID")
+ACCOUNT_ID   = os.getgetenv("CF_ACCOUNT_ID")
 PROFILE_ID   = os.getenv("CF_PROFILE_ID", "default")
 MODE         = os.getenv("MODE", "exclude")  # exclude=CN直连 | include=只有CN走WARP
 
 if not all([CF_API_TOKEN, ACCOUNT_ID]):
-    raise ValueError("缺少环境变量！请在 GitHub Secrets 设置 CF_API_TOKEN、CF_ACOUNT_ID")
+    raise ValueError("缺少环境变量！请在 GitHub Secrets 设置 CF_API_TOKEN、CF_ACCOUNT_ID")
 
 HEADERS = {
     "Authorization": f"Bearer {CF_API_TOKEN}",
@@ -32,9 +32,10 @@ def get_cn_domains():
             m = re.search(r'server=/([^/]+)/', line)
             if m:
                 d = m.group(1)
-                domains.append(d)
+                # 确保域名以 `*.` 开头
                 if not d.startswith('*.'):
-                    domains.append(f"*.{d}")
+                    d = f"*.{d}"
+                domains.append(d)
     return list(set(domains))
 
 def update_split_tunnels(cidrs, domains):
