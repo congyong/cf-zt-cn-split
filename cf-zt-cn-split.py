@@ -2,12 +2,10 @@ import requests
 import os
 import re
 
-# ================== 从 GitHub Secrets 读取 ==================
 CF_API_TOKEN = os.getenv("CF_API_TOKEN")
 ACCOUNT_ID   = os.getenv("CF_ACCOUNT_ID")
 PROFILE_ID   = os.getenv("CF_PROFILE_ID", "default")
-MODE         = os.getenv("MODE", "exclude")   # exclude=CN直连（推荐） | include=只有CN走WARP
-# ========================================================
+MODE         = os.getenv("MODE", "exclude")  # exclude=CN直连 | include=只有CN走WARP
 
 if not all([CF_API_TOKEN, ACCOUNT_ID]):
     raise ValueError("缺少环境变量！请在 GitHub Secrets 设置 CF_API_TOKEN、CF_ACCOUNT_ID")
@@ -40,16 +38,16 @@ def get_cn_domains():
     return list(set(domains))
 
 def update_split_tunnels(cidrs, domains):
-    routes = [{"address": ip} for ip in cidrs] + [{"address": dom} for dom in domains]
-    payload = {"mode": MODE, "routes": routes[:8000]}
-    
-    #url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/settings/profiles/{PROFILE_ID}/split_tunnels"
-    #url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/{PROFILE_ID}/split_tunnels/exclude"
-    url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/{PROFILE_ID}/exclude"
+    # 合并 IP 和域名，并限制总数（示例：取前 8000 条）
+    routes = (cidrs[:4000] + domains[:4000])[:8000]
+    payload = {"routes": routes}
+
+    # 正确的 API 路径
+    url = f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/devices/policy/{PROFILE_ID}/split_tunnels/{MODE}"
     resp = requests.put(url, json=payload, headers=HEADERS)
-    
+
     if resp.status_code in (200, 204):
-        print(f"✅ 同步成功！{len(cidrs)} IP + {len(domains)} 域名 | Mode: {MODE}")
+        print(f"✅ 同步成功！{len(routes)} 条路由 | Mode: {MODE}")
     else:
         print(f"❌ 失败 {resp.status_code}: {resp.text}")
         resp.raise_for_status()
