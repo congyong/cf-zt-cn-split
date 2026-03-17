@@ -19,9 +19,9 @@ MAX_RULES = 4000
 
 # 方案B：gaoyifan 按运营商分列，只取三大运营商，覆盖率 >95%
 OPERATOR_URLS = {
-    "chinatelecom": "https://raw.githubusercontent.com/gaoyifan/china-operator-ip/ip-lists/chinatelecom.txt",
-    "chinaunicom":  "https://raw.githubusercontent.com/gaoyifan/china-operator-ip/ip-lists/chinaunicom.txt",
-    "chinamobile":  "https://raw.githubusercontent.com/gaoyifan/china-operator-ip/ip-lists/chinamobile.txt",
+    "chinatelecom": "https://gaoyifan.github.io/china-operator-ip/chinanet.txt",
+    "chinaunicom":  "https://gaoyifan.github.io/china-operator-ip/unicom.txt",
+    "chinamobile":  "https://gaoyifan.github.io/china-operator-ip/cmcc.txt",
 }
 
 # 方案A（备用）：IPdeny 聚合版
