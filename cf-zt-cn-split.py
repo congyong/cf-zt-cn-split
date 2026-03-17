@@ -18,6 +18,8 @@ HEADERS = {
 IP_URL = "https://raw.githubusercontent.com/17mon/china_ip_list/master/china_ip_list.txt"
 # DOMAIN_URL = "https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf"
 
+MAX_RULES = 4000  # Cloudflare Zero Trust 单策略最大规则数
+
 
 def get_cn_cidrs():
     r = requests.get(IP_URL)
@@ -41,12 +43,15 @@ def get_cn_cidrs():
 
 
 def update_split_tunnels(cidrs):
-    ip_entries = [{"address": cidr, "description": "CN IP"} for cidr in cidrs]
+    ip_entries = [{"address": cidr, "description": "CN IP"} for cidr in cidrs[:MAX_RULES]]
 
     # 暂不合并域名，待配额充足后启用：
-    # domain_entries = [{"host": domain, "description": "CN Domain"} for domain in domains[:4000]]
-    # routes = (ip_entries + domain_entries)[:8000]
+    # domain_entries = [{"host": domain, "description": "CN Domain"} for domain in domains[:MAX_RULES]]
+    # routes = (ip_entries + domain_entries)[:MAX_RULES]
     routes = ip_entries
+
+    if len(cidrs) > MAX_RULES:
+        print(f"⚠️  CIDR 共 {len(cidrs)} 条，超出限制，已截断至 {MAX_RULES} 条")
 
     # 默认策略不带 PROFILE_ID，自定义策略带 PROFILE_ID
     if PROFILE_ID:
@@ -65,7 +70,7 @@ def update_split_tunnels(cidrs):
 if __name__ == "__main__":
     print("🔄 拉取最新 CN geo 数据...")
     cidrs = get_cn_cidrs()
-    print(f"   获取到 {len(cidrs)} 条 CIDR")
+    print(f"   获取到 {len(cidrs)} 条 CIDR（最多取前 {MAX_RULES} 条）")
 
     # domains = get_cn_domains()
     # print(f"   获取到 {len(domains)} 条域名")
