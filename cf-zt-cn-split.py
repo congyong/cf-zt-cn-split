@@ -22,7 +22,7 @@ TARGET_DOMAIN_N = 200  # 期望域名条数，剩余配额给 IP
 VALID_DOMAIN_RE = re.compile(r'^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$')
 
 # 域名：Loyalsoldier 精选直连域名
-DOMAIN_URL = "https://raw.githubusercontent.com/Loyalsoldier/surge-rules/release/direct.txt"
+DOMAIN_URL = "https://raw.githubusercontent.com/congyong/cf-zt-cn-split/refs/heads/master/direct.txt"
 
 # IP：GeoIP2-CN
 IP_URL = "https://raw.githubusercontent.com/soffchen/GeoIP2-CN/release/CN-ip-cidr.txt"
