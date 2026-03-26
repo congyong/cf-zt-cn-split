@@ -76,8 +76,8 @@ def update_split_tunnels(cidrs, domains):
     routes = domain_entries + ip_entries
     # 逐条打印 domain_entries
     print("===== 正在打印 domain_entries 列表 =====")
-        for index, entry in enumerate(domain_entries, 1):
-            print(f"第 {index} 条 | host: {entry['host']:<30} | description: {entry['description']}")
+    for index, entry in enumerate(domain_entries, 1):
+        print(f"第 {index} 条 | host: {entry['host']:<30} | description: {entry['description']}")
     
 
     print(f"   域名规则：{len(domain_entries)} 条 | IP 规则：{len(ip_entries)} 条 | 合计：{len(routes)} 条")
