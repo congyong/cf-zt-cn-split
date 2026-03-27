@@ -83,7 +83,7 @@ def get_cn_domains():
 def update_split_tunnels(cidrs, domains):
     # 动态分配配额：域名取 TARGET_DOMAIN_N 条，剩余给 IP
     max_domains = min(TARGET_DOMAIN_N, len(domains))
-    max_ips     = min(MAX_RULES - max_domains - len(DEFAULT_INTERNAL_IPS), len(cidrs))
+    max_ips     = 0 #min(MAX_RULES - max_domains - len(DEFAULT_INTERNAL_IPS), len(cidrs))
 
     # 顺序：内网保留IP → 域名 → 国内IP
     internal_entries = [{"address": ip, "description": "LAN/Internal IP"} for ip in DEFAULT_INTERNAL_IPS]
